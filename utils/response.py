@@ -12,5 +12,5 @@ def response(status_code, data=[]):
             "msg": content[0],
             "data": data,
         },
-        # content[1] or status.HTTP_200_OK,
+        content[1] or status.HTTP_200_OK,
     )
