@@ -1,4 +1,6 @@
 from bson.objectid import ObjectId
+import os
+UPLOAD_DIRECTORY = "uploaded_files"
 
 def create(collection_name,user_data):
     item = collection_name.insert_one(user_data)
@@ -26,7 +28,7 @@ def read(collection_name):
     return all_data
 
 def update(collection_name,id,user_data):
-    data = collection_name.find({"_id":ObjectId(id)})
+    data = collection_name.find_one({"_id":ObjectId(id)})
     if data:
         updated_item = collection_name.update_one(
             {"_id": ObjectId(id)}, {"$set": user_data}
@@ -36,8 +38,9 @@ def update(collection_name,id,user_data):
         return False 
 
 def delete(collection_name,id):
-    user_data = collection_name.find({"_id":ObjectId(id)})
+    user_data = collection_name.find_one({"_id":ObjectId(id)})
     if user_data:
+        os.remove(f"{UPLOAD_DIRECTORY}/{user_data['image'].split('/')[1]}")
         collection_name.delete_one({"_id": ObjectId(id)})
         return True
     else:
