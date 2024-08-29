@@ -56,7 +56,7 @@ def read_api() -> Page:
     except Exception:
         return response(1005)
 
-@router.post("/update_api")
+@router.put("/update_api")
 async def update_api(
     id:str = Form(),
     name : Optional[str] = Form(None),
@@ -76,7 +76,9 @@ async def update_api(
                 file_object.write(await image.read())
         if id:
             data = collection_name.find_one({"_id":ObjectId(id)})
-
+        if not data:
+            return response(1008)
+        
         user_data={
             "name":name if name else data['name'],
             "image":f"files/{image.filename}" if image else data['image'],
@@ -90,7 +92,7 @@ async def update_api(
     except Exception:
         return response(1005)
 
-@router.post("/delete_api")
+@router.delete("/delete_api")
 def delete_api(
     id:str = Form()
 ):
